@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Bitácora Heavy-Híbrido | Tin & Listo</title>
+  <style>
+    :root {
+      --bg: #090d14;
+      --card: #121824;
+      --card-alt: #182030;
+      --input-bg: #0b0f17;
+      --border: #263248;
+      --text: #f1f5f9;
+      --muted: #8b9bb4;
+      --green: #10b981;
+      --green-bg: rgba(16, 185, 129, 0.14);
+      --blue: #3b82f6;
+      --blue-bg: rgba(59, 130, 246, 0.15);
+      --purple: #a855f7;
+      --purple-bg: rgba(168, 85, 247, 0.15);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245, 158, 11, 0.15);
+      --red: #ef4444;
+      --red-bg: rgba(239, 68, 68, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 12px 12px 110px 12px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* TOP BAR */
+    .top-bar {
+      background: linear-gradient(135deg, #151e2e 0%, #0f1521 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .top-bar h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .block-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--input-bg);
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .block-selector label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .block-selector select {
+      background: transparent;
+      color: #fff;
+      border: none;
+      font-weight: 800;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .block-selector select option {
+      background: var(--card);
+      color: #fff;
+    }
+
+    /* WEEK PILLS */
+    .week-scroll {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .w-pill {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 10px;
+      padding: 8px 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .w-pill.active {
+      background: var(--blue-bg);
+      border-color: var(--blue);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.25);
+    }
+
+    .w-pill strong {
+      display: block;
+      font-size: 0.85rem;
+    }
+
+    .w-pill span {
+      font-size: 0.65rem;
+      display: block;
+      margin-top: 2px;
+      opacity: 0.85;
+    }
+
+    /* WEEK BANNER INFO */
+    .week-banner {
+      background: var(--card);
+      border-left: 4px solid var(--blue);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* DAY SELECTOR */
+    .day-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .d-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 10px;
+      padding: 10px 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .d-btn.active {
+      background: var(--green-bg);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    .d-btn strong {
+      display: block;
+      font-size: 0.84rem;
+    }
+
+    .d-btn span {
+      font-size: 0.68rem;
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* PROGRESS BAR OF SESSION */
+    .session-progress {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .prog-bar-wrap {
+      flex: 1;
+      height: 8px;
+      background: var(--input-bg);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .prog-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--green));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .prog-text {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* EXERCISE CARD */
+    .ex-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .ex-header {
+      background: var(--card-alt);
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .ex-title {
+      font-size: 0.96rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .ex-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .warmup-chip {
+      font-size: 0.72rem;
+      background: var(--amber-bg);
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* SET ROWS */
+    .sets-header {
+      display: grid;
+      grid-template-columns: 54px 1.2fr 1fr 1fr 48px;
+      gap: 6px;
+      padding: 8px 12px;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--muted);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .set-row {
+      display: grid;
+      grid-template-columns: 54px 1.2fr 1fr 1fr 48px;
+      gap: 6px;
+      padding: 8px 12px;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.2s;
+    }
+
+    .set-row:last-child {
+      border-bottom: none;
+    }
+
+    .set-row.done {
+      background: rgba(16, 185, 129, 0.09);
+    }
+
+    .set-row.deload-skip {
+      opacity: 0.4;
+    }
+
+    .set-badge {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 6px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .badge-top { background: var(--purple-bg); color: var(--purple); border: 1px solid rgba(168,85,247,0.3); }
+    .badge-bo { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+    .badge-lin { background: rgba(148,163,184,0.12); color: #cbd5e1; border: 1px solid rgba(148,163,184,0.25); }
+    .badge-rp { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+    .prev-info {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.25;
+    }
+
+    .prev-info strong {
+      color: #cbd5e1;
+      display: block;
+    }
+
+    .up-alert {
+      display: inline-block;
+      font-size: 0.65rem;
+      background: var(--green-bg);
+      color: var(--green);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .num-input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      color: #fff;
+      border-radius: 8px;
+      padding: 9px 6px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      transition: border 0.15s;
+    }
+
+    .num-input:focus {
+      border-color: var(--blue);
+    }
+
+    .num-input::placeholder {
+      color: rgba(148, 163, 184, 0.38);
+      font-weight: 600;
+    }
+
+    .check-btn {
+      width: 42px;
+      height: 38px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .check-btn.checked {
+      background: var(--green);
+      border-color: var(--green);
+      color: #052e16;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    }
+
+    /* REST PAUSE EXTRA ROW */
+    .rp-drawer {
+      background: rgba(239, 68, 68, 0.06);
+      border-top: 1px dashed rgba(239, 68, 68, 0.25);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .rp-drawer span {
+      font-size: 0.76rem;
+      color: #fca5a5;
+      font-weight: 600;
+    }
+
+    .rp-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rp-input {
+      width: 70px;
+      background: var(--input-bg);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fff;
+      border-radius: 6px;
+      padding: 5px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .rp-timer-btn {
+      background: var(--red-bg);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: var(--red);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* EXERCISE NOTES INPUT */
+    .ex-footer {
+      padding: 8px 12px;
+      background: rgba(0,0,0,0.2);
+      border-top: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .note-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 0.78rem;
+      outline: none;
+    }
+
+    .note-input:focus {
+      color: #fff;
+    }
+
+    /* BACKUP & EXPORT SECTION */
+    .backup-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+
+    .backup-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .b-btn {
+      background: var(--card-alt);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      flex: 1;
+      min-width: 140px;
+      text-align: center;
+    }
+
+    .b-btn.primary {
+      background: var(--blue-bg);
+      border-color: var(--blue);
+      color: #93c5fd;
+    }
+
+    .b-btn.danger {
+      background: var(--red-bg);
+      border-color: rgba(239,68,68,0.3);
+      color: #fca5a5;
+    }
+
+    /* FLOATING TIMER BAR */
+    .floating-timer {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 24px);
+      max-width: 736px;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      z-index: 999;
+    }
+
+    .ft-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ft-time {
+      font-size: 1.5rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      color: var(--green);
+      min-width: 68px;
+    }
+
+    .ft-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.2;
+    }
+
+    .ft-label strong {
+      color: #fff;
+      display: block;
+      font-size: 0.82rem;
+    }
+
+    .ft-QuickBtns {
+      display: flex;
+      gap: 5px;
+    }
+
+    .ft-btn {
+      background: var(--card-alt);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 7px 9px;
+      border-radius: 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .ft-btn.stop {
+      background: var(--red-bg);
+      color: var(--red);
+      border-color: rgba(239,68,68,0.3);
+    }
+
+    .toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--green);
+      color: #042f1e;
+      padding: 10px 18px;
+      border-radius: 99px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      display: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toast" id="toastMsg">¡Guardado!</div>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div>
+      <h1>📓 BITÁCORA "TIN & LISTO"</h1>
+      <div style="font-size: 0.75rem; color: var(--muted);">Todo lo que escribas se guarda solo en tu celular</div>
+    </div>
+    <div class="block-selector">
+      <label for="blockSelect">Mesociclo:</label>
+      <select id="blockSelect" onchange="changeBlock(this.value)">
+        <option value="1">Bloque 1 (Actual)</option>
+        <option value="2">Bloque 2</option>
+        <option value="3">Bloque 3</option>
+        <option value="4">Bloque 4</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- WEEK SELECTOR -->
+  <div class="week-scroll" id="weekSelector">
+    <div class="w-pill active" onclick="selectWeek(1)"><strong>Sem 1</strong><span>RIR 2 Base</span></div>
+    <div class="w-pill" onclick="selectWeek(2)"><strong>Sem 2</strong><span>RIR 1 + RP</span></div>
+    <div class="w-pill" onclick="selectWeek(3)"><strong>Sem 3</strong><span>RIR 1 Kilos</span></div>
+    <div class="w-pill" onclick="selectWeek(4)"><strong>Sem 4</strong><span>RIR 1 Récord</span></div>
+    <div class="w-pill" onclick="selectWeek(5)"><strong>Sem 5</strong><span>RIR 0 Fallo</span></div>
+    <div class="w-pill" onclick="selectWeek(6)"><strong>Sem 6</strong><span>Descarga</span></div>
+  </div>
+
+  <!-- WEEK BANNER -->
+  <div class="week-banner" id="weekBanner"></div>
+
+  <!-- DAY SELECTOR -->
+  <div class="day-grid" id="daySelector">
+    <div class="d-btn active" onclick="selectDay('lunes')"><strong>Lunes</strong><span>Torso A ⚡</span></div>
+    <div class="d-btn" onclick="selectDay('martes')"><strong>Martes</strong><span>Pierna A ⚡</span></div>
+    <div class="d-btn" onclick="selectDay('viernes')"><strong>Viernes</strong><span>Torso B 🔥</span></div>
+    <div class="d-btn" onclick="selectDay('sabado')"><strong>Sábado</strong><span>Pierna B 🔥</span></div>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div class="session-progress">
+    <div class="prog-text" id="progText">Series hoy: 0 / 0</div>
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-fill" id="progFill"></div>
+    </div>
+    <button class="ft-btn" onclick="copyWeekSummary()" title="Copiar texto de este día">📋 Copiar Día</button>
+  </div>
+
+  <!-- WORKOUT CONTAINER -->
+  <div id="workoutContainer"></div>
+
+  <!-- BACKUP & PORTABILITY -->
+  <div class="backup-card">
+    <div style="font-size: 0.9rem; font-weight: 800; color: #fff;">💾 Copia de Seguridad y Resumen para IA</div>
+    <p style="font-size: 0.76rem; color: var(--muted); margin-top: 4px;">
+      Tus pesos están guardados en este navegador. Usa estos botones para copiar todo tu progreso en texto (y pegármelo en el chat cuando quieras que lo revise) o para descargar un respaldo.
+    </p>
+    <div class="backup-btns">
+      <button class="b-btn primary" onclick="copyFullHistoryForAI()">🤖 Copiar Todo para el Chat</button>
+      <button class="b-btn" onclick="exportJSON()">⬇️ Descargar Respaldo (.json)</button>
+      <button class="b-btn" onclick="document.getElementById('importFile').click()">⬆️ Restaurar Respaldo</button>
+      <input type="file" id="importFile" style="display:none" accept=".json" onchange="importJSON(event)">
+    </div>
+  </div>
+
+  <!-- FLOATING REST TIMER -->
+  <div class="floating-timer">
+    <div class="ft-left">
+      <div class="ft-time" id="timerDisplay">00:00</div>
+      <div class="ft-label">
+        <strong id="timerStatus">Descanso Listo</strong>
+        <span id="timerSub">Toca ✅ en una serie para iniciar</span>
+      </div>
+    </div>
+    <div class="ft-QuickBtns">
+      <button class="ft-btn" onclick="startTimer(210, 'Top Set (3:30)')">3:30</button>
+      <button class="ft-btn" onclick="startTimer(120, 'Back-Off (2:00)')">2:00</button>
+      <button class="ft-btn" onclick="startTimer(75, 'Aislado (1:15)')">1:15</button>
+      <button class="ft-btn" onclick="startTimer(15, 'Rest-Pause (15s)')">15s</button>
+      <button class="ft-btn stop" onclick="stopTimer()">✕</button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'nico_hybrid_tracker_v1';
+    let appState = {
+      currentBlock: 1,
+      currentWeek: 1,
+      currentDay: 'lunes',
+      logs: {} // Estructura: logs[key] = { kg, reps, done, rpReps, note }
+    };
+
+    let timerInterval = null;
+
+    // Configuración de semanas
+    const weekMeta = {
+      1: { name: "Semana 1: Calibración", rirMain: "RIR 2", rirIso: "RIR 1 (Sin Rest-Pause)", color: "#3b82f6", creatine: "Creatina: 10g/día (Mini-carga)" },
+      2: { name: "Semana 2: Doble Progresión", rirMain: "RIR 1", rirIso: "RIR 0 + Rest-Pause Activo", color: "#10b981", creatine: "Creatina: 5g/día" },
+      3: { name: "Semana 3: Subida de Cargas", rirMain: "RIR 1", rirIso: "RIR 0 + Rest-Pause Activo", color: "#10b981", creatine: "Creatina: 5g/día" },
+      4: { name: "Semana 4: Consolidación", rirMain: "RIR 1 al límite", rirIso: "RIR 0 + Rest-Pause Activo", color: "#f59e0b", creatine: "Creatina: 5g/día" },
+      5: { name: "Semana 5: Pico Heavy Duty", rirMain: "RIR 0 (Fallo Técnico)", rirIso: "RIR 0 + Rest-Pause en Todo", color: "#ef4444", creatine: "Creatina: 5g/día" },
+      6: { name: "Semana 6: Descarga Activa", rirMain: "RIR 4 (Mitad de reps)", rirIso: "RIR 3 (Cero Rest-Pause)", color: "#a855f7", creatine: "Creatina: 5g/día" }
+    };
+
+    // Base de datos de las 4 rutinas
+    const workoutDB = {
+      lunes: [
+        {
+          id: "lun_press_plano",
+          name: "1. Press Plano (Barra o Mancuernas)",
+          sub: "Básico Pecho • Calienta con 3-4 series progresivas (W)",
+          hasWarmupHelper: true,
+          sets: [
+            { num: 1, type: "TOP", label: "TOP", range: "6-8", maxRep: 8, rest: 210 },
+            { num: 2, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.88, rest: 120 },
+            { num: 3, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.88, rest: 120, deloadSkip: true }
+          ]
+        },
+        {
+          id: "lun_jalon_prono",
+          name: "2. Jalón al Pecho (Agarre Prono Abierto)",
+          sub: "Básico Espalda Anchura • Controla 2 seg la subida",
+          hasWarmupHelper: true,
+          sets: [
+            { num: 1, type: "TOP", label: "TOP", range: "6-8", maxRep: 8, rest: 180 },
+            { num: 2, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.88, rest: 120 },
+            { num: 3, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.88, rest: 120, deloadSkip: true }
+          ]
+        },
+        {
+          id: "lun_press_inclinado",
+          name: "3. Press Inclinado (Mancuernas o Multipower)",
+          sub: "Secundario Pecho Superior • 2 series efectivas",
+          sets: [
+            { num: 1, type: "TOP", label: "TOP", range: "8-10", maxRep: 10, rest: 120 },
+            { num: 2, type: "BO", label: "B-OFF", range: "10-12", maxRep: 12, backoffPct: 0.90, rest: 90 }
+          ]
+        },
+        {
+          id: "lun_remo_polea",
+          name: "4. Remo Sentado en Polea (Apoyo en piernas)",
+          sub: "Secundario Espalda Grosor • Agarre estrecho V",
+          sets: [
+            { num: 1, type: "TOP", label: "TOP", range: "8-10", maxRep: 10, rest: 120 },
+            { num: 2, type: "BO", label: "B-OFF", range: "10-12", maxRep: 12, backoffPct: 0.90, rest: 90 }
+          ]
+        },
+        {
+          id: "lun_curl_biceps",
+          name: "5A. [Superserie] Curl de Bíceps (Barra Z / Manc.)",
+          sub: "Pasa en 0 seg a Tríceps • Sem 2-5 lleva Rest-Pause en S2",
+          sets: [
+            { num: 1, type: "LIN", label: "LIN 1", range: "8-10", maxRep: 10, rest: 10 },
+            { num: 2, type: "RP", label: "S2+RP", range: "8-10", maxRep: 10, rest: 15, hasRP: true }
+          ]
+        },
+        {
+          id: "lun_ext_triceps",
+          name: "5B. [Superserie] Extensión Tríceps en Polea Alta",
+          sub: "Descansa 60s al terminar • Sem 2-5 lleva Rest-Pause en S2",
+          sets: [
+            { num: 1, type: "LIN", label: "LIN 1", range: "8-10", maxRep: 10, rest: 60 },
+            { num: 2, type: "RP", label: "S2+RP", range: "8-10", maxRep: 10, rest: 60, hasRP: true }
+          ]
+        }
+      ],
+      martes: [
+        {
+          id: "mar_sentadilla_prensa",
+          name: "1. Sentadilla Libre o Prensa 45°",
+          sub: "Básico Cuádriceps • Misma profundidad siempre",
+          hasWarmupHelper: true,
+          sets: [
+            { num: 1, type: "TOP", label: "TOP", range: "6-8", maxRep: 8, rest: 210 },
+            { num: 2, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.86, rest: 120 },
+            { num: 3, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.86, rest: 120, deloadSkip: true }
+          ]
+        },
+        {
+          id: "mar_pm_rumano",
+          name: "2. Peso Muerto Rumano (Barra o Mancuernas)",
+          sub: "Básico Isquios/Glúteo • 2 series intensas controlando bajada",
+          hasWarmupHelper: true,
+          sets: [
+            { num: 1, type: "TOP", label: "TOP", range: "6-8", maxRep: 8, rest: 180 },
+            { num: 2, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.90, rest: 120 }
+          ]
+        },
+        {
+          id: "mar_ext_cuadriceps",
+          name: "3. Extensión de Cuádriceps en Máquina",
+          sub: "Aislado Cuádriceps • Pausa 1 seg arriba",
+          sets: [
+            { num: 1, type: "LIN", label: "LIN 1", range: "10-12", maxRep: 12, rest: 90 },
+            { num: 2, type: "RP", label: "S2+RP", range: "10-12", maxRep: 12, rest: 90, hasRP: true }
+          ]
+        },
+        {
+          id: "mar_curl_femoral",
+          name: "4. Curl Femoral (Tumbado o Sentado)",
+          sub: "Aislado Isquios • Pega la cadera al banco",
+          sets: [
+            { num: 1, type: "LIN", label: "LIN 1", range: "10-12", maxRep: 12, rest: 90 },
+            { num: 2, type: "RP", label: "S2+RP", range: "10-12", maxRep: 12, rest: 90, hasRP: true }
+          ]
+        },
+        {
+          id: "mar_gemelos",
+          name: "5. Elevación de Gemelos (De pie o Prensa)",
+          sub: "Pausa obligatoria de 2 seg abajo en estiramiento",
+          sets: [
+            { num: 1, type: "LIN", label: "LIN 1", range: "10-12", maxRep: 12, rest: 60 },
+            { num: 2, type: "RP", label: "S2+RP", range: "10-12", maxRep: 12, rest: 60, hasRP: true }
+          ]
+        }
+      ],
+      viernes: [
+        {
+          id: "vie_remo_ancho",
+          name: "1. Remo Sentado en Polea (Agarre Ancho/Neutro)",
+          sub: "Prioridad Espalda Grosor • Tira hacia el abdomen alto",
+          hasWarmupHelper: true,
+          sets: [
+            { num: 1, type: "TOP", label: "TOP", range: "6-8", maxRep: 8, rest: 180 },
+            { num: 2, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.88, rest: 120 },
+            { num: 3, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.88, rest: 120, deloadSkip: true }
+          ]
+        },
+        {
+          id: "vie_press_inclinado_pesado",
+          name: "2. Press Inclinado (Barra o Mancuernas)",
+          sub: "Prioridad Pecho Superior • 1 Top Set + 2 Back-Offs",
+          hasWarmupHelper: true,
+          sets: [
+            { num: 1, type: "TOP", label: "TOP", range: "6-8", maxRep: 8, rest: 210 },
+            { num: 2, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.88, rest: 120 },
+            { num: 3, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.88, rest: 120, deloadSkip: true }
+          ]
+        },
+        {
+          id: "vie_jalon_estrecho",
+          name: "3. Jalón al Pecho (Agarre Estrecho / Triángulo)",
+          sub: "Enfocado en elongar dorsales arriba",
+          sets: [
+            { num: 1, type: "TOP", label: "TOP", range: "8-10", maxRep: 10, rest: 120 },
+            { num: 2, type: "BO", label: "B-OFF", range: "10-12", maxRep: 12, backoffPct: 0.90, rest: 90 },
+            { num: 3, type: "BO", label: "B-OFF", range: "10-12", maxRep: 12, backoffPct: 0.90, rest: 90, deloadSkip: true }
+          ]
+        },
+        {
+          id: "vie_aperturas_fondos",
+          name: "4. Aperturas (Peck Deck / Polea) o Fondos",
+          sub: "3 Series Lineales (Mismo peso en todas)",
+          sets: [
+            { num: 1, type: "LIN", label: "LIN 1", range: "10-12", maxRep: 12, rest: 90 },
+            { num: 2, type: "LIN", label: "LIN 2", range: "10-12", maxRep: 12, rest: 90 },
+            { num: 3, type: "LIN", label: "LIN 3", range: "10-12", maxRep: 12, rest: 90, deloadSkip: true }
+          ]
+        },
+        {
+          id: "vie_laterales",
+          name: "5. Elevaciones Laterales (Mancuernas o Polea)",
+          sub: "3 Series Lineales a RIR 0 • Clave para anchura en V",
+          sets: [
+            { num: 1, type: "LIN", label: "LIN 1", range: "10-12", maxRep: 12, rest: 75 },
+            { num: 2, type: "LIN", label: "LIN 2", range: "10-12", maxRep: 12, rest: 75 },
+            { num: 3, type: "LIN", label: "LIN 3", range: "10-12", maxRep: 12, rest: 75, deloadSkip: true }
+          ]
+        },
+        {
+          id: "vie_biceps_inclinado",
+          name: "6A. [Superserie] Curl Bíceps Inclinado o Predicador",
+          sub: "Pasa directo a Tríceps • 3 Series Lineales RIR 0",
+          sets: [
+            { num: 1, type: "LIN", label: "LIN 1", range: "8-10", maxRep: 10, rest: 10 },
+            { num: 2, type: "LIN", label: "LIN 2", range: "8-10", maxRep: 10, rest: 10 },
+            { num: 3, type: "LIN", label: "LIN 3", range: "8-10", maxRep: 10, rest: 10, deloadSkip: true }
+          ]
+        },
+        {
+          id: "vie_triceps_frances",
+          name: "6B. [Superserie] Press Francés o Ext. Trasnuca",
+          sub: "Descansa 75s al terminar • 3 Series Lineales RIR 0",
+          sets: [
+            { num: 1, type: "LIN", label: "LIN 1", range: "8-10", maxRep: 10, rest: 75 },
+            { num: 2, type: "LIN", label: "LIN 2", range: "8-10", maxRep: 10, rest: 75 },
+            { num: 3, type: "LIN", label: "LIN 3", range: "8-10", maxRep: 10, rest: 75, deloadSkip: true }
+          ]
+        }
+      ],
+      sabado: [
+        {
+          id: "sab_prensa_sentadilla",
+          name: "1. Prensa 45° o Sentadilla (Alterna con Martes)",
+          sub: "Básico Cuádriceps • 1 Top Set + 2 Back-Offs",
+          hasWarmupHelper: true,
+          sets: [
+            { num: 1, type: "TOP", label: "TOP", range: "6-8", maxRep: 8, rest: 210 },
+            { num: 2, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.86, rest: 120 },
+            { num: 3, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.86, rest: 120, deloadSkip: true }
+          ]
+        },
+        {
+          id: "sab_femoral_pesado",
+          name: "2. Curl Femoral Sentado o Tumbado (Pesado)",
+          sub: "Prioridad Isquios • 1 Top Set + 2 Back-Offs",
+          sets: [
+            { num: 1, type: "TOP", label: "TOP", range: "6-8", maxRep: 8, rest: 150 },
+            { num: 2, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.88, rest: 90 },
+            { num: 3, type: "BO", label: "B-OFF", range: "8-10", maxRep: 10, backoffPct: 0.88, rest: 90, deloadSkip: true }
+          ]
+        },
+        {
+          id: "sab_ext_zancadas",
+          name: "3. Extensión de Cuádriceps o Zancadas",
+          sub: "3 Series Lineales al fallo (RIR 0)",
+          sets: [
+            { num: 1, type: "LIN", label: "LIN 1", range: "10-12", maxRep: 12, rest: 90 },
+            { num: 2, type: "LIN", label: "LIN 2", range: "10-12", maxRep: 12, rest: 90 },
+            { num: 3, type: "LIN", label: "LIN 3", range: "10-12", maxRep: 12, rest: 90, deloadSkip: true }
+          ]
+        },
+        {
+          id: "sab_pmr_mancuernas",
+          name: "4. Peso Muerto Rumano Mancuernas / Hiperext.",
+          sub: "3 Series Lineales enfocadas en estiramiento",
+          sets: [
+            { num: 1, type: "LIN", label: "LIN 1", range: "8-10", maxRep: 10, rest: 120 },
+            { num: 2, type: "LIN", label: "LIN 2", range: "8-10", maxRep: 10, rest: 120 },
+            { num: 3, type: "LIN", label: "LIN 3", range: "8-10", maxRep: 10, rest: 120, deloadSkip: true }
+          ]
+        },
+        {
+          id: "sab_gemelos",
+          name: "5A. [Superserie] Elevación de Gemelos",
+          sub: "Pasa sin descanso a Elevaciones Laterales",
+          sets: [
+            { num: 1, type: "LIN", label: "LIN 1", range: "10-12", maxRep: 12, rest: 10 },
+            { num: 2, type: "LIN", label: "LIN 2", range: "10-12", maxRep: 12, rest: 10 },
+            { num: 3, type: "LIN", label: "LIN 3", range: "10-12", maxRep: 12, rest: 10, deloadSkip: true }
+          ]
+        },
+        {
+          id: "sab_laterales_ss",
+          name: "5B. [Superserie] Elevaciones Laterales Mancuernas",
+          sub: "Frecuencia 2 de Hombro Lateral en 0 minutos extra",
+          sets: [
+            { num: 1, type: "LIN", label: "LIN 1", range: "12-15", maxRep: 15, rest: 60 },
+            { num: 2, type: "LIN", label: "LIN 2", range: "12-15", maxRep: 15, rest: 60 },
+            { num: 3, type: "LIN", label: "LIN 3", range: "12-15", maxRep: 15, rest: 60, deloadSkip: true }
+          ]
+        }
+      ]
+    };
+
+    // Cargar estado desde localStorage
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          appState = { ...appState, ...parsed };
+        }
+      } catch (e) {
+        console.error("Error leyendo localStorage", e);
+      }
+      document.getElementById('blockSelect').value = appState.currentBlock;
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        console.error("Error guardando localStorage", e);
+      }
+    }
+
+    function getLogKey(block, week, exId, setNum) {
+      return `b${block}_w${week}_${exId}_s${setNum}`;
+    }
+
+    function getNoteKey(block, week, exId) {
+      return `b${block}_w${week}_${exId}_note`;
+    }
+
+    function getSetData(block, week, exId, setNum) {
+      const k = getLogKey(block, week, exId, setNum);
+      return appState.logs[k] || { kg: '', reps: '', done: false, rpReps: '' };
+    }
+
+    // Busca lo levantado la semana anterior (o en el bloque anterior si es Sem 1)
+    function getPrevWeekData(block, week, exId, setNum) {
+      if (week > 1) {
+        // Si estamos en Semana 6 (Descarga), comparamos contra Semana 4 o 5
+        const refW = week === 6 ? 5 : week - 1;
+        const d = getSetData(block, refW, exId, setNum);
+        if (d.kg || d.reps) return { ...d, fromLabel: `Sem ${refW}` };
+        if (week === 6) {
+          const d4 = getSetData(block, 4, exId, setNum);
+          if (d4.kg || d4.reps) return { ...d4, fromLabel: `Sem 4` };
+        }
+      } else if (block > 1) {
+        // En Semana 1 de un bloque nuevo, mira la Semana 4 o 5 del bloque anterior
+        const d5 = getSetData(block - 1, 5, exId, setNum);
+        if (d5.kg || d5.reps) return { ...d5, fromLabel: `B${block-1} S5` };
+        const d4 = getSetData(block - 1, 4, exId, setNum);
+        if (d4.kg || d4.reps) return { ...d4, fromLabel: `B${block-1} S4` };
+      }
+      return null;
+    }
+
+    function round25(val) {
+      return Math.round(val / 2.5) * 2.5;
+    }
+
+    function changeBlock(val) {
+      appState.currentBlock = parseInt(val, 10);
+      saveState();
+      renderAll();
+    }
+
+    function selectWeek(w) {
+      appState.currentWeek = w;
+      saveState();
+      renderAll();
+    }
+
+    function selectDay(d) {
+      appState.currentDay = d;
+      saveState();
+      renderAll();
+    }
+
+    function renderAll() {
+      const w = appState.currentWeek;
+      const d = appState.currentDay;
+      const b = appState.currentBlock;
+
+      // Actualizar botones de Semana
+      document.querySelectorAll('#weekSelector .w-pill').forEach((el, idx) => {
+        el.classList.toggle('active', idx + 1 === w);
+      });
+
+      // Actualizar Banner de Semana
+      const wm = weekMeta[w];
+      const banner = document.getElementById('weekBanner');
+      banner.style.borderLeftColor = wm.color;
+      banner.innerHTML = `
+        <div>
+          <strong style="color:${wm.color}">${wm.name}</strong> •
+          <span>Básicos: <strong>${wm.rirMain}</strong> | Aislados: <strong>${wm.rirIso}</strong></span>
+        </div>
+        <div style="color:var(--green); font-weight:700; font-size:0.76rem;">${wm.creatine}</div>
+      `;
+
+      // Actualizar botones de Día
+      const dayKeys = ['lunes', 'martes', 'viernes', 'sabado'];
+      document.querySelectorAll('#daySelector .d-btn').forEach((el, idx) => {
+        el.classList.toggle('active', dayKeys[idx] === d);
+      });
+
+      // Renderizar tarjetas de ejercicios
+      const container = document.getElementById('workoutContainer');
+      const exercises = workoutDB[d];
+
+      let totalSetsToday = 0;
+      let completedSetsToday = 0;
+
+      container.innerHTML = exercises.map(ex => {
+        // Obtener el peso del Top Set (Serie 1) por si hay que sugerir Back-Offs o Calentamiento
+        const s1Current = getSetData(b, w, ex.id, 1);
+        const s1Prev = getPrevWeekData(b, w, ex.id, 1);
+        const refTopKg = parseFloat(s1Current.kg) || (s1Prev ? parseFloat(s1Prev.kg) : 0);
+
+        let warmupBadge = '';
+        if (ex.hasWarmupHelper && refTopKg > 0) {
+          const w1 = round25(refTopKg * 0.55);
+          const w2 = round25(refTopKg * 0.75);
+          const w3 = round25(refTopKg * 0.90);
+          warmupBadge = `<div class="warmup-chip" title="Series de aproximación sugeridas">🔥 Calienta: ${w1}kg×8 → ${w2}kg×4 → ${w3}kg×1</div>`;
+        }
+
+        const rowsHtml = ex.sets.map(s => {
+          const isDeloadSkip = (w === 6 && s.deloadSkip);
+          const cur = getSetData(b, w, ex.id, s.num);
+          const prev = getPrevWeekData(b, w, ex.id, s.num);
+
+          if (!isDeloadSkip) {
+            totalSetsToday++;
+            if (cur.done) completedSetsToday++;
+          }
+
+          // Sugerencia inteligente de peso y reps
+          let suggestedKg = prev && prev.kg ? prev.kg : '';
+          let suggestedReps = prev && prev.reps ? prev.reps : s.range.split('-')[0];
+
+          // Si es un Back-Off y el usuario ya escribió un Top Set hoy, calcular el % automático
+          if (s.type === 'BO' && s.backoffPct && parseFloat(s1Current.kg) > 0 && !cur.kg) {
+            suggestedKg = round25(parseFloat(s1Current.kg) * s.backoffPct);
+          } else if (s.type === 'LIN' && s.num > 1 && parseFloat(s1Current.kg) > 0 && !cur.kg) {
+            // En series lineales, sugerir el mismo peso de la Serie 1
+            suggestedKg = s1Current.kg;
+          }
+
+          // En semana de descarga (Sem 6), sugerir la mitad de repeticiones
+          if (w === 6) {
+            suggestedReps = s.type === 'TOP' ? '4' : '6';
+          }
+
+          // Determinar si la semana pasada alcanzó el tope del rango para avisar subida de peso
+          let progressAlert = '';
+          if (prev && prev.reps && parseInt(prev.reps, 10) >= s.maxRep && w < 6) {
+            progressAlert = `<span class="up-alert">🔥 +2.5kg hoy</span>`;
+          }
+
+          const prevText = prev && (prev.kg || prev.reps)
+            ? `<strong>${prev.kg || 0} kg × ${prev.reps || 0}</strong><span>(${prev.fromLabel})${ prev.rpReps ? ' +' + prev.rpReps + ' RP' : ''}</span> ${progressAlert}`
+            : `<span>Sin registro previo</span>`;
+
+          // Clases del badge según tipo de serie
+          let badgeClass = 'badge-lin';
+          if (s.type === 'TOP') badgeClass = 'badge-top';
+          if (s.type === 'BO') badgeClass = 'badge-bo';
+          if (s.type === 'RP' && w >= 2 && w <= 5) badgeClass = 'badge-rp';
+
+          // Mostrar cajón de Rest-Pause en Semanas 2 a 5 (o en Semana 5 para la última serie de aislados)
+          const showRP = (s.hasRP && w >= 2 && w <= 5) || (w === 5 && s.num === ex.sets.length && s.type !== 'TOP');
+
+          return `
+            <div class="set-row ${cur.done ? 'done' : ''} ${isDeloadSkip ? 'deload-skip' : ''}" id="row_${ex.id}_${s.num}">
+              <div>
+                <div class="set-badge ${badgeClass}">
+                  <span>${s.label}</span>
+                  <span style="font-size:0.6rem; opacity:0.8;">${w === 6 ? 'RIR 4' : s.range}</span>
+                </div>
+              </div>
+              <div class="prev-info">
+                ${isDeloadSkip ? '<span style="color:var(--purple)">Omitir en Descarga</span>' : prevText}
+              </div>
+              <div class="input-wrap">
+                <input type="text" inputmode="decimal" class="num-input"
+                  id="kg_${ex.id}_${s.num}"
+                  value="${cur.kg}"
+                  placeholder="${suggestedKg !== '' ? suggestedKg : 'kg'}"
+                  oninput="updateField('${ex.id}', ${s.num}, 'kg', this.value)">
+              </div>
+              <div class="input-wrap">
+                <input type="text" inputmode="numeric" class="num-input"
+                  id="reps_${ex.id}_${s.num}"
+                  value="${cur.reps}"
+                  placeholder="${suggestedReps}"
+                  oninput="updateField('${ex.id}', ${s.num}, 'reps', this.value)">
+              </div>
+              <div>
+                <button class="check-btn ${cur.done ? 'checked' : ''}"
+                  onclick="toggleSetDone('${ex.id}', ${s.num}, '${suggestedKg}', '${suggestedReps}', ${s.rest}, '${s.label}')">
+                  ✓
+                </button>
+              </div>
+            </div>
+            ${showRP ? `
+              <div class="rp-drawer">
+                <span>⚡ <strong>Rest-Pause (15s descanso al fallar):</strong> ¿Cuántas reps extra sacaste?</span>
+                <div class="rp-controls">
+                  <button class="rp-timer-btn" onclick="startTimer(15, 'Rest-Pause (15s)')">⏱️ 15s</button>
+                  <input type="text" inputmode="numeric" class="rp-input"
+                    placeholder="+3 reps"
+                    value="${cur.rpReps || ''}"
+                    oninput="updateField('${ex.id}',${s.num}, 'rpReps', this.value)">
+                </div>
+              </div>
+            ` : ''}
+          `;
+        }).join('');
+
+        const savedNote = appState.logs[getNoteKey(b, w, ex.id)] || '';
+
+        return `
+          <div class="ex-card">
+            <div class="ex-header">
+              <div>
+                <div class="ex-title">${ex.name}</div>
+                <div class="ex-sub">${ex.sub}</div>
+              </div>
+              ${warmupBadge}
+            </div>
+            <div class="sets-header">
+              <div>Serie</div>
+              <div>Anterior</div>
+              <div style="text-align:center;">Peso (kg)</div>
+              <div style="text-align:center;">Reps</div>
+              <div style="text-align:center;">Tin</div>
+            </div>
+            ${rowsHtml}
+            <div class="ex-footer">
+              <input type="text" class="note-input"
+                placeholder="📝 Nota rápida (ej. altura polea 4, me pesó hoy, subir en la próxima...)"
+                value="${savedNote}"
+                oninput="updateNote('${ex.id}', this.value)">
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      updateProgressBar(completedSetsToday, totalSetsToday);
+    }
+
+    function updateField(exId, setNum, field, val) {
+      const k = getLogKey(appState.currentBlock, appState.currentWeek, exId, setNum);
+      if (!appState.logs[k]) {
+        appState.logs[k] = { kg: '', reps: '', done: false, rpReps: '' };
+      }
+      appState.logs[k][field] = val;
+      saveState();
+
+      // Si editó el peso de la Serie 1 (Top Set), refrescar placeholders de Back-Offs sin perder foco
+      if (setNum === 1 && field === 'kg') {
+        updateBackoffPlaceholders(exId, parseFloat(val));
+      }
+    }
+
+    function updateBackoffPlaceholders(exId, topKg) {
+      const ex = workoutDB[appState.currentDay].find(e => e.id === exId);
+      if (!ex || !topKg) return;
+      ex.sets.forEach(s => {
+        if (s.num > 1) {
+          const inputEl = document.getElementById(`kg_${exId}_${s.num}`);
+          if (inputEl && !inputEl.value) {
+            if (s.type === 'BO' && s.backoffPct) {
+              inputEl.placeholder = round25(topKg * s.backoffPct);
+            } else if (s.type === 'LIN') {
+              inputEl.placeholder = topKg;
+            }
+          }
+        }
+      });
+    }
+
+    function updateNote(exId, val) {
+      const nk = getNoteKey(appState.currentBlock, appState.currentWeek, exId);
+      appState.logs[nk] = val;
+      saveState();
+    }
+
+    // Al tocar el chulito "✅": autorrellena si estaba vacío, guarda y lanza el cronómetro
+    function toggleSetDone(exId, setNum, suggestedKg, suggestedReps, restSeconds, label) {
+      const k = getLogKey(appState.currentBlock, appState.currentWeek, exId, setNum);
+      if (!appState.logs[k]) {
+        appState.logs[k] = { kg: '', reps: '', done: false, rpReps: '' };
+      }
+      const entry = appState.logs[k];
+      entry.done = !entry.done;
+
+      if (entry.done) {
+        const kgInput = document.getElementById(`kg_${exId}_${setNum}`);
+        const repsInput = document.getElementById(`reps_${exId}_${setNum}`);
+        if (!entry.kg && kgInput && kgInput.placeholder && kgInput.placeholder !== 'kg') {
+          entry.kg = kgInput.placeholder;
+        }
+        if (!entry.reps && repsInput && repsInput.placeholder) {
+          entry.reps = repsInput.placeholder;
+        }
+        startTimer(restSeconds, `Descanso ${label} (${formatTime(restSeconds)})`);
+      }
+
+      saveState();
+      renderAll();
+    }
+
+    function updateProgressBar(done, total) {
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+      document.getElementById('progText').textContent = `Series hoy: ${done} / ${total} (${pct}%)`;
+      document.getElementById('progFill').style.width = `${pct}%`;
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function playBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        gain.gain.setValueAtTime(0.25, ctx.currentTime);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.35);
+      } catch (e) {}
+      if (navigator.vibrate) navigator.vibrate([250, 120, 250]);
+    }
+
+    function startTimer(seconds, labelText) {
+      clearInterval(timerInterval);
+      let rem = seconds;
+      const disp = document.getElementById('timerDisplay');
+      const status = document.getElementById('timerStatus');
+      const sub = document.getElementById('timerSub');
+
+      status.textContent = labelText || 'Descansando...';
+      sub.textContent = 'Respira profundo y prepárate';
+
+      function tick() {
+        disp.textContent = formatTime(rem);
+        disp.style.color = rem <= 10 ? '#ef4444' : '#10b981';
+      }
+
+      tick();
+      timerInterval = setInterval(() => {
+        rem--;
+        if (rem < 0) {
+          clearInterval(timerInterval);
+          disp.textContent = "¡DALE!";
+          disp.style.color = "#f59e0b";
+          status.textContent = "¡Tiempo Cumplido!";
+          sub.textContent = "A romper esa serie mi rey";
+          playBeep();
+          return;
+        }
+        tick();
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      document.getElementById('timerDisplay').textContent = "00:00";
+      document.getElementById('timerDisplay').style.color = "#10b981";
+      document.getElementById('timerStatus').textContent = "Reloj Detenido";
+      document.getElementById('timerSub').textContent = "Toca ✅ en una serie para iniciar";
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toastMsg');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 2400);
+    }
+
+    // Copiar resumen del día actual
+    function copyWeekSummary() {
+      const b = appState.currentBlock;
+      const w = appState.currentWeek;
+      const d = appState.currentDay;
+      let lines = [`📊 RESUMEN: Bloque ${b} - Semana ${w} (${d.toUpperCase()})`];
+
+      workoutDB[d].forEach(ex => {
+        let setStrs = [];
+        ex.sets.forEach(s => {
+          const data = getSetData(b, w, ex.id, s.num);
+          if (data.kg || data.reps) {
+            setStrs.push(`${s.label}: ${data.kg || 0}kg x ${data.reps || 0}${data.rpReps ? ' (+' + data.rpReps + ' RP)' : ''}`);
+          }
+        });
+        const note = appState.logs[getNoteKey(b, w, ex.id)];
+        if (setStrs.length > 0) {
+          lines.push(`- ${ex.name}: ${setStrs.join(' | ')}${note ? ' [Nota: ' + note + ']' : ''}`);
+        }
+      });
+
+      const finalTxt = lines.length > 1 ? lines.join('\n') : 'Aún no hay series registradas en este día.';
+      navigator.clipboard.writeText(finalTxt).then(() => showToast('📋 ¡Resumen del día copiado!'));
+    }
+
+    // Copiar todo el bloque para pegarlo a Gemini y analizar progreso
+    function copyFullHistoryForAI() {
+      const b = appState.currentBlock;
+      let lines = [`🤖 REPORTE DE PROGRESO (BLOQUE ${b}) PARA ANÁLISIS:`];
+      const days = ['lunes', 'martes', 'viernes', 'sabado'];
+
+      for (let w = 1; w <= 6; w++) {
+        let weekLines = [];
+        days.forEach(d => {
+          workoutDB[d].forEach(ex => {
+            let sList = [];
+            ex.sets.forEach(s => {
+              const dt = getSetData(b, w, ex.id, s.num);
+              if (dt.kg || dt.reps) {
+                sList.push(`S${s.num}(${s.label}): ${dt.kg}kg×${dt.reps}${dt.rpReps ? '+' + dt.rpReps + 'RP' : ''}`);
+              }
+            });
+            if (sList.length > 0) {
+              weekLines.push(`  [${d.toUpperCase()}] ${ex.name}: ${sList.join(', ')}`);
+            }
+          });
+        });
+        if (weekLines.length > 0) {
+          lines.push(`\n--- SEMANA ${w} ---`);
+          lines.push(...weekLines);
+        }
+      }
+
+      const out = lines.length > 1 ? lines.join('\n') : 'Aún no tienes registros guardados en este bloque.';
+      navigator.clipboard.writeText(out).then(() => showToast('🤖 ¡Historial copiado! Pégalo en el chat cuando quieras.'));
+    }
+
+    function exportJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", `bitacora_gym_bloque_${appState.currentBlock}.json`);
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+      showToast('⬇️ Respaldo descargado');
+    }
+
+    function importJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported && imported.logs) {
+            appState = imported;
+            saveState();
+            renderAll();
+            showToast('✅ ¡Historial restaurado con éxito!');
+          }
+        } catch (err) {
+          alert('Archivo inválido');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Inicializar aplicación
+    loadState();
+    renderAll();
+  </script>
+</body>
+</html>
